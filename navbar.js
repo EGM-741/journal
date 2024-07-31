@@ -413,6 +413,8 @@ class Navbar extends HTMLElement {
                 menu.classList.add("mobile-menu-wrapper_active");
             }
         });
+        window.onbeforeunload = () => sessionStorage.setItem('scrollPos', window.scrollY);
+        window.onload = () => window.scrollTo(0, sessionStorage.getItem('scrollPos') || 0);
     }
 }
 
