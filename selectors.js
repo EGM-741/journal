@@ -46,6 +46,16 @@ class Selectors extends HTMLElement {
                 .span.add_new {
                     color: rgb(128, 128, 128);
                 }
+                @media (width <= 880px) {
+                    .selectors-panel {
+                        padding-top: 40px;
+                    }
+                }
+                @media (width <= 640px) {
+                    .selectors-panel {
+                        padding-top: 20px;
+                    }
+                }
             </style>
         `;
         this.innerHTML = `
