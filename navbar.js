@@ -247,6 +247,7 @@ class Navbar extends HTMLElement {
                         justify-content: start;
                         /* color: white; */
                         cursor: pointer;
+                        max-width: none;
                     }
                     div.control-panel {
                         margin-top: 20px;
