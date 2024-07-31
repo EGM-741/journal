@@ -50,9 +50,11 @@ class Selectors extends HTMLElement {
                 }
                 .selector-icon {
                     margin-right: 10px;
+                    font-size: 25px;
+                    font-family: Icons;
                 }
                     span.date, span.short {
-                        font-family: 'Iconfont';
+                        font-family: Iconfont;
                     }
                 .calendar {
                     border: none;
@@ -136,14 +138,14 @@ class Selectors extends HTMLElement {
             <div class="selectors-panel">
             <div class="selectors date">
                 <div tooltip="введите дату начала поиска" class="selector control-panel__segment date" id="date_from">
-                    <span class="selector-icon control-panel__segment-icon date"></span>
+                    <span class="selector-icon date"></span>
                     <p  class="selector-text">
                         дата от
                     </p>
                     <input class="calendar" type="date" placeholder="ДД-ММ-ГГ" value="" />
                 </div>
                 <div tooltip="введите дату конца поиска" class="selector control-panel__segment date" id="date_till">
-                    <span class="selector-icon control-panel__segment-icon date"></span>
+                    <span class="selector-icon date"></span>
                     <p  class="selector-text">
                         дата до
                     </p>
@@ -154,38 +156,38 @@ class Selectors extends HTMLElement {
             <div class="selectors-panel">
             <div class="selectors forms">
                 <div tooltip="добавить юридическую форму" class="selector control-panel__segment" id="add_new">
-                    <span class="selector-icon control-panel__segment-icon add_new">+</span>
+                    <span class="selector-icon add_new">+</span>
                     <p  class="selector-text">
                         add a new one
                     </p>
                 </div>
                 <div tooltip="удалить юридическую форму" class="selector control-panel__segment" id="deselect">
-                    <span class="selector-icon icon control-panel__segment-icon" id="deselect"></span>
+                    <span class="selector-icon" id="deselect"></span>
                     <p  class="selector-text">
                         deselect
                     </p>
                 </div>
                 <div tooltip="нашлось: ${this.COUNTER}" class="selector control-panel__segment" id="in_total">
-                    <span class="selector-icon icon control-panel__segment-icon"></span>
+                    <span class="selector-icon"></span>
                     <p  class="selector-text">
                         in total:
                         <span class="counter">${this.COUNTER}</span>
                     </p>
                 </div>
                 <div tooltip="экспортировать данные в xslx" class="selector control-panel__segment" id="export">
-                    <span class="selector-icon icon control-panel__segment-icon"></span>
+                    <span class="selector-icon"></span>
                     <p  class="selector-text">
                         export
                     </p>
                 </div>
                 <div tooltip="сокращенные юридические формы" class="selector control-panel__segment" id="short">
-                    <span class="selector-icon icon control-panel__segment-icon short"></span>
+                    <span class="selector-icon icon short"></span>
                     <p  class="selector-text">
                         сокращ. юр.ф.
                     </p>
                 </div>
                 <div tooltip="удалить данные в бд" class="selector control-panel__segment" id="delete">
-                    <span class="selector-icon icon control-panel__segment-icon"></span>
+                    <span class="selector-icon icon"></span>
                     <p  class="selector-text">
                         delete everything
                     </p>
