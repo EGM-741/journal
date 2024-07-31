@@ -74,7 +74,7 @@ p {
     top: 0;
     right: 0;
     height: 100%;
-    vertical-align: center;
+    vertical-align: middle;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -138,6 +138,20 @@ body {
 @font-face {
     font-family: Icons;
     src: url("./assets/fonts/icomoon.ttf");
+}
+
+@font-face {
+    font-family: Iconfont;
+  src: url('./assets/fonts/fontello.eot?19799490');
+  src: url('./assets/fonts/fontello.eot?19799490#iefix') format('embedded-opentype'),
+       url('./assets/fonts/fontello.woff2?19799490') format('woff2'),
+       url('./assets/fonts/fontello.woff?19799490') format('woff'),
+       url('./assets/fonts/fontello.ttf?19799490') format('truetype'),
+       url('./assets/fonts/fontello.svg?19799490#fontello') format('svg');
+}
+@font-face {
+    font-family: Iconfont;
+    src: url('./assets/fonts/fontello.ttf?2435959');
 }
 
 @font-face {
