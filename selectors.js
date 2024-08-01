@@ -17,7 +17,6 @@ class Selectors extends HTMLElement {
                     flex-wrap: wrap;
                     flex-direction: row;
                     width: 100%;
-                    max-width: 1700px;
                     height: min-content;
                 }
                 .selector {
@@ -100,7 +99,7 @@ class Selectors extends HTMLElement {
                     font-size: 18px;
                     font-family: 'Inter-Medium';
                 }
-                .choose-box-selector-text {
+                .choose-box-selector-text, .choose-box-region {
                     margin-left: 10px;
                 }
                 ul {
@@ -117,9 +116,28 @@ class Selectors extends HTMLElement {
                 li {
                     list-style-type: none;
                 }
-                @media (width >= 1420px) {
+                @media (width > 1599px) {
                     .choose-box-panel {
-                        max-width: 1100px;
+                        max-width: 78vw;
+                    }
+                    .selector {
+                        min-width: 312px;
+                    }
+                }
+                @media (1599px >= width >= 1499px) {
+                    .choose-box-panel {
+                        max-width: 78vw;
+                    }
+                    .selector {
+                        min-width: 260px;
+                    }
+                }
+                @media (1499px > width >= 1240px) {
+                    .choose-box-panel {
+                        max-width: 1499px;
+                    }
+                    .selector {
+                        min-width: 300px;
                     }
                 }
                 @media (width <= 880px) {
@@ -213,11 +231,11 @@ class Selectors extends HTMLElement {
                         </div>
                     </div>
                     <div class="choose-box-type">
-                        <div class="choose-box-type choose-box-text">
-                            Тип учебного заведения
+                        <div class="choose-box-type choose-box-region">
+                            Регион учебного заведения
                         </div>
                         <div class="choose-box-type choose-box-selector">
-                            <p class="choose-box-type choose-box-selector-text">Тип учебного заведения</p>
+                            <p class="choose-box-type choose-box-selector-text">Регион учебного заведения</p>
                             <ul>
                                 <li><input type="checkbox" id="opt1"><label for="opt1">Опция 1</label>
                                 </li>

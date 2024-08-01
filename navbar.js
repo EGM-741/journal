@@ -4,33 +4,34 @@ class Navbar extends HTMLElement {
         this.setup();
     }
     THRID_PANEL_TABS = [
-        ["объявления", ""],
-        ["вакансии", ""],
-        ["вакансии объед...", ""],
-        ["соискатели", ""],
-        ["отклики", ""],
-        ["фио", ""],
-        ["Адреса", ""],
-        ["Компании", ""],
-        ["Учебные заведения", ""],
-        ["Сокр.Ю.Ф.", ""],
-        ["Альтернативные", ""],
-        ["Филиалы", ""],
-        ["Квалификации", ""],
-        ["Специальности", ""],
-        ["Телефонные коды", ""],
-        ["Администраторы", ""],
-        ["email рассылка", ""],
-        ["КАК БЫЛО КАК НАДО", ""],
-        ["ПРЕФИКСЫ СЧЕТОВ", ""],
-        ["ПОИСК", ""],
-        ["БАНКИ", ""],
-        ["РУБРИКАТОР", ""],
+        ["объявления", "","notification"],
+        ["вакансии", "","vacancies"],
+        ["вакансии объединенные", "","vacancies_united"],
+        ["соискатели", "","cosearchers"],
+        ["отклики", "","responces"],
+        ["фио", "","fio"],
+        ["Адреса", "","addresses"],
+        ["Компании", "","companies"],
+        ["Учебные заведения", "","edu"],
+        ["Сокр.Ю.Ф.", "","short_name"],
+        ["Альтернативные", "","alt_name"],
+        ["Филиалы", "","filial"],
+        ["Квалификации", "","qualifications"],
+        ["Специальности", "","professions"],
+        ["Телефонные коды", "","phone_codes"],
+        ["Администраторы", "","admins"],
+        ["email рассылка", "","mailing"],
+        ["КАК БЫЛО КАК НАДО", "","how_was_how_need"],
+        ["ПРЕФИКСЫ СЧЕТОВ", "","prefixes"],
+        ["ПОИСК", "","search"],
+        ["БАНКИ", "","banks"],
+        ["РУБРИКАТОР", "","","rubricator"],
     ];
-    THIRD_PANEL_TAB_TEMPLATE = (tabName, icon, { classes, id, tabNameClasses } = { classes: "", id: "", tabNameClasses: "" }) => {
+    THIRD_PANEL_TAB_TEMPLATE = (tabName, icon, id, { classes, tabNameClasses } = { classes: "", tabNameClasses: "" }) => {
         return /*html*/ `
-        <div class="third-panel__tab" ${id ? `id=${id.trim()}` : ""}>
-            ${icon ? `<span tooltip="${tabName}"  class="third-panel__tab-icon icon ads-icon in-panel ${classes}">${icon}</span>` : ""}
+        <div class="third-panel__tab" id="${id}">
+            <div class="tooltip" tooltip="${tabName}" style="position: absolute; width: calc(100%/9); height: 70px; margin-top: -5px;"></div>
+            ${icon ? `<span  class="third-panel__tab-icon icon ads-icon in-panel ${classes}">${icon}</span>` : ""}
             <p class="third-panel__tab-text ${tabNameClasses}">${tabName}</p>
         </div>
     `;
@@ -47,6 +48,7 @@ class Navbar extends HTMLElement {
                 }
                 navbar-elem{
                     width: 100%;
+                    display: block;
                 }
                 .panels__panel {
                     box-sizing: border-box;
@@ -92,7 +94,7 @@ class Navbar extends HTMLElement {
                     align-items: center;
                 }
                 .third-panel{
-                    align-items: center;
+                    align-items: start;
                     flex: 1eft;
                     row-gap: 20px;
                     box-sizing: border-box;
@@ -106,15 +108,15 @@ class Navbar extends HTMLElement {
                     box-sizing: border-box;
                     font-weight: 100;
                     color: white;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 1;
-                    -webkit-box-orient: vertical;
                     max-width: calc(95/881*100vw);
                     align-items: center;
                     justify-content: center;
                     color: white;
                     font-size: 18px;
                     cursor: pointer;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
                 }
                 .third-panel__tab_active{
                     color: var(--yellow);
@@ -138,6 +140,11 @@ class Navbar extends HTMLElement {
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: wrap;
+                }
+                #vacancies_united .third-panel__tab-text {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
                 }
                 .panels {
                     width: 100%;
@@ -283,6 +290,14 @@ class Navbar extends HTMLElement {
                 <p>Меню</p>
                 <span class="icon burger"></span>
             </div>
+            <div class="first-panel">
+                <div class="control">
+                    <div class="first-panel__control-exit">
+                        <span class="icon"></span>
+                        <p>Войти</p>
+                    </div>
+                </div>
+            </div>
             <div id="navbar">
                 <div class="panels__panel second-panel ">
                     <div class="tab second-panel__tab" id="interface_tab">
@@ -291,7 +306,7 @@ class Navbar extends HTMLElement {
                     <div class="tab second-panel__tab" id="social_tab">
                         <p>Соц. сети</p>
                     </div>
-                    <div class="tab second-panel__tab" id="journals_tab">
+                    <div class="tab second-panel__tab tab_active" id="journals_tab">
                         <p>Журналы</p>
                     </div>
                     <div class="tab second-panel__tab" id="import_tab">
@@ -319,10 +334,10 @@ class Navbar extends HTMLElement {
                         let markup = "";
                         for (const tab of this.THRID_PANEL_TABS.slice(0, 8)) {
                             if (tab[0] == "вакансии объед") {
-                                markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1], { tabNameClasses: "no-white" });
+                                markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1], tab[2], {tabNameClasses: "no-white" });
                                 continue;
                             }
-                            markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1]);
+                            markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1], tab[2]);
                         }
                         return markup;
                     })()}
@@ -366,6 +381,7 @@ class Navbar extends HTMLElement {
         const secondPanelExceptJournals = this.querySelectorAll('.second-panel__tab:not(#journals_tab)');
         const journals = this.querySelector("#journals_tab");
         const tab = this.querySelector(".journals");
+        tab.classList.add("visible");
 
         Array.from(secondPanelExceptJournals).forEach(tab1 => tab1.onclick = () => {
             tab.classList.remove("visible");

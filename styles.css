@@ -209,11 +209,20 @@ body {
     max-width: 32vw;
     white-space: normal;
 }
-.third-panel__tab-icon[tooltip]:hover::after {
-    transform: translateY(calc(100% + 35px));
-    white-space: nowrap;
-    left: calc(-10/881*100vw);
+.third-panel__tab [tooltip]:hover::before {
+    left: calc(40/881*100vw);
 }
+
+#fio [tooltip]:hover::before {
+}
+.third-panel__tab [tooltip]:hover::after {
+    transform: translateY(calc(100% - 10px));
+    white-space: nowrap;
+    left: calc(20/881*100vw);
+}
+    #fio [tooltip]:hover::after {
+        left: calc(35/881*100vw);
+    }
 span.icon {
     display: inline;
     font-family: Icons;
