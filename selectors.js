@@ -69,6 +69,9 @@ class Selectors extends HTMLElement {
                 span#deselect {
                     color: rgb(255,0,0);
                 }
+                .counter {
+                    color: #4FA95D;
+                }
                 .choose-box-panel {
                     padding: 40px 20px 0px 20px;
                     max-width: 1200px;
