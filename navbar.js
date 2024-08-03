@@ -16,8 +16,8 @@ class Navbar extends HTMLElement {
         ["Сокр.Ю.Ф.", "","short_name"],
         ["Альтернативные", "","alt_name"],
         ["Филиалы", "","filial"],
-        ["Квалификации", "","qualifications"],
-        ["Специальности", "","professions"],
+        ["Квалификации", "","qualifications",
+        "Специальности", "","professions"],
         ["Телефонные коды", "","phone_codes"],
         ["Администраторы", "","admins"],
         ["email рассылка", "","mailing"],
@@ -28,13 +28,26 @@ class Navbar extends HTMLElement {
         ["РУБРИКАТОР", "","","rubricator"],
     ];
     THIRD_PANEL_TAB_TEMPLATE = (tabName, icon, id, { classes, tabNameClasses } = { classes: "", tabNameClasses: "" }) => {
-        return /*html*/ `
-        <div class="third-panel__tab" id="${id}">
-            <div class="tooltip" tooltip="${tabName}" style="position: absolute; width: calc(100%/9); height: 70px; margin-top: -5px;"></div>
-            ${icon ? `<span  class="third-panel__tab-icon icon ads-icon in-panel ${classes}">${icon}</span>` : ""}
-            <p class="third-panel__tab-text ${tabNameClasses}">${tabName}</p>
-        </div>
-    `;
+        if (tabName[0] == "Квалификации") {
+            return /*html*/ `
+            <div class="third-panel__tab q" id="${id}">
+                <div class="tooltip" tooltip="${tabName[0]} | ${tabName[1]}" style="position: absolute; width: calc(100%/9); height: 120px; margin-top: -5px;"></div>
+                ${icon ? `<span  class="third-panel__tab-icon icon ads-icon in-panel ${classes}">${icon[0]}</span>` : ""}
+                <p class="third-panel__tab-text ${tabNameClasses}">${tabName[0]}</p>
+                ${icon ? `<span  class="third-panel__tab-icon icon ads-icon in-panel ${classes}">${icon[1]}</span>` : ""}
+                <p class="third-panel__tab-text ${tabNameClasses}">${tabName[1]}</p>
+            </div>
+        `;
+        }
+        else {
+            return /*html*/ `
+            <div class="third-panel__tab" id="${id}">
+                <div class="tooltip" tooltip="${tabName}" style="position: absolute; width: calc(100%/9); height: 70px; margin-top: -5px;"></div>
+                ${icon ? `<span  class="third-panel__tab-icon icon ads-icon in-panel ${classes}">${icon}</span>` : ""}
+                <p class="third-panel__tab-text ${tabNameClasses}">${tabName}</p>
+            </div>
+        `;
+        }
     };
     render() {
         const STYLE = /*html*/ `
@@ -330,21 +343,17 @@ class Navbar extends HTMLElement {
                     </div>
                 </div>
                 <div class="third-panel journals panels__panel">
-                    ${(() => {
-                        let markup = "";
-                        for (const tab of this.THRID_PANEL_TABS.slice(0, 8)) {
-                            if (tab[0] == "вакансии объед") {
-                                markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1], tab[2], {tabNameClasses: "no-white" });
-                                continue;
-                            }
-                            markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1], tab[2]);
-                        }
-                        return markup;
-                    })()}
+        ${(() => {
+        let markup = "";
+        for (const tab of this.THRID_PANEL_TABS.slice(0, 8)) {
+            markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1], tab[2]);
+        }
+        return markup;
+        })()}
                     <div class="third-panel__tab more">
                         <p class="third-panel__tab-text">
-                            <span style="width: 100%; text-align: center; position: static;">Все 22</span>
-                            <br> журнала <span class="icon reversed" style="padding-left: 5px;"></span></p>
+                            <span style="width: 100%; text-align: center; position: static;">Все 21</span>
+                            <br> журнал <span class="icon reversed" style="padding-left: 5px;"></span></p>
                     </div>
                     <div class="other-tabs">
                         ${(() => {
@@ -353,7 +362,12 @@ class Navbar extends HTMLElement {
                                 if (index == 8) {
                                     markup += `<div class="third-panel__tab more"></div>`;
                                 }
-                                markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1]);
+                                if (tab[0] == "Квалификации") {
+                                    markup += this.THIRD_PANEL_TAB_TEMPLATE([tab[0], tab[3]], [tab[1], tab[4]], tab[2]);
+                                }
+                                else {
+                                    markup += this.THIRD_PANEL_TAB_TEMPLATE(tab[0], tab[1]);
+                                }
                             }
                             return markup;
                         })()}

@@ -1,6 +1,4 @@
 class Selectors extends HTMLElement {
-    isFocusOnType = new Boolean(false);
-    isFocusOnRegion = new Boolean(false);
     COUNTER = 0;
     STYLE = ``;
     HTML = ``;
@@ -139,17 +137,27 @@ class Selectors extends HTMLElement {
         this.REGION_LIST[20]
     ];
     TYPE_LIST = [
-        ["По всем"],
-        ["Школы, гимназии"],
-        ["Средние специальные учебные заведения"],
-        ["Высшие специальные учебные заведения"]
+        ["По всем",                             "common-type"],
+        ["Школы, гимназии",                     "school-type"],
+        ["Средние специальные учебные заведения","prof-type"],
+        ["Высшие специальные учебные заведения","hight-type"]
     ];
     OPTION_TEMPLATE = (id, region) => {
         return `
-        <li class="option"><p><label for="op_reg${id}">${region}</label></p><span><input type="checkbox" class="checkbox" id="op${id}"></span>
+        <li class="option">
+            <p><label for="op_reg${id}">${region}</label></p>
+            <div style="position: relative;">
+            <span class="checkbox op-${id}" id="op-${id}"></span>
+            </div>
         </li>
         `;
     }
+    CHOSEN_TYPES = [
+        false,
+        false,
+        false,
+        false
+    ];
     Where = (list, condition) => {
         let new_list = "";
         let isContain = new Boolean(false);
@@ -191,6 +199,15 @@ class Selectors extends HTMLElement {
     render() {
         this.STYLE = `
             <style>
+                .background {
+                    position: absolute;
+                    width: 100vw;
+                    height: 200vh;
+                    margin-top: -50vh;
+                    background-color: rgba(0,0,0,0.2);
+                    visibility: hidden;
+                    z-index: 2;
+                }
                 .selectors-panel {
                     padding: 0px 20px 0px 20px;
                 }
@@ -246,6 +263,7 @@ class Selectors extends HTMLElement {
                     font-size: 18px;
                     color: #4FA95D;
                     text-transform: uppercase;
+                    background: transparent;
                 }
                 input[type="date"]::-webkit-calendar-picker-indicator {
                     display: none;
@@ -268,9 +286,14 @@ class Selectors extends HTMLElement {
                     height: min-content;
                     text-align: left;
                     row-gap: 20px;
+                    font-size: 18px;
+                    font-family: 'Inter-Medium';
                 }
                 .choose-box-type, .choose-box-region {
                     flex: 1;
+                }
+                #choose-box-region {
+                    margin-left: 50px;
                 }
                 .choose-box-selector {
                     position: relative;
@@ -287,6 +310,7 @@ class Selectors extends HTMLElement {
                     cursor: pointer;
                     font-size: 18px;
                     font-family: 'Inter-Medium';
+                    margin-top: 10px;
                 }
                     .choose-box-selector:hover {
                         border-color: #848484;
@@ -319,19 +343,45 @@ class Selectors extends HTMLElement {
                     width: 63vw;
                     border: none;
                     visibility: visible;
-
-                    z-index: 15;
                 }
-                .type-selector-input:focus ~ .type_input {
-                    font-size: 12px;
-                    color: #111;
-                    transform: translateY(-10px);
-                }
+                    .type_input_focus {
+                        font-size: 12px;
+                        color: #111;
+                        transform: translateY(-10px);
+                    }
                 .region-selector-input:focus ~ .region_input {
                     font-size: 12px;
                     color: #111;
                     transform: translateY(-10px);
                 }
+                .focus {
+                    z-index: 5;
+                }
+                input[type="checkbox"] {
+                    z-index: 60;
+                    position: absolute;
+                    top: 5px;
+                    left: -15px;
+                    transform:scale(2);
+                    visibility: hidden;
+                }
+                .checkbox {
+                    position: absolute;
+                    top: 0;
+                    left: -22px;
+                    height: 26px;
+                    width: 26px;
+                    border: solid 1px #00B0D9;
+                    font-family: Iconfont;
+                    font-size: 14px;
+                    color: #FFFFFF;
+                    text-align: center;
+                    align-items: center;
+                    display: grid;
+                }
+                    .checkbox.checked {
+                        background-color: #00B0D9;
+                    }
                 .type_input {
                     transition: 0.2s;
                     pointer-events: none;
@@ -349,16 +399,16 @@ class Selectors extends HTMLElement {
                     border-style: solid;
                     border-color: #00B0D9;
                     background-color: white;
-                    margin: 20px 0px 0px calc(-63.6vw);
+                    margin: 25px 0px 0px calc(-63.6vw);
                     padding: 10px 22px 10px 18px;
                 }
                 ul.type-selector {
-                    z-index: 16;
+                    z-index: 3;
                 }
                 ul.region-selector {
-                    z-index: 11;
+                    z-index: 2;
                 }
-                ul.type-selector.visible, ul.region-selector.visible {
+                .visible {
                     visibility: visible;
                 }
                 li {
@@ -370,9 +420,6 @@ class Selectors extends HTMLElement {
                 .option {
                     display: flex;
                     justify-content: space-between;
-                }
-                .checkbox {
-                    transform:scale(1.5);
                 }
                 .choose {
                     background-color: #00B0D9;
@@ -388,12 +435,12 @@ class Selectors extends HTMLElement {
                 }
                 @media (width > 1599px) {
                     .selector-input {
-                        margin: -15px 0px 0px calc(-38.8vw);
-                        width: 38.8vw;
+                        margin: -10px 0px 0px calc(-36vw);
+                        width: 36vw;
                     }
                     .ul-selector {
-                        margin: 20px 0px 0px calc(-38.8vw);
-                        width: 36.2vw;
+                        margin: 25px 0px 0px calc(-37.2vw);
+                        width: 34.5vw;
                     }
                     .choose-box-panel {
                         max-width: 78vw;
@@ -404,12 +451,12 @@ class Selectors extends HTMLElement {
                 }
                 @media (1599px >= width >= 1499px) {
                     .selector-input {
-                        margin: -15px 0px 0px calc(-38.8vw);
-                        width: 38.8vw;
+                        margin: -10px 0px 0px calc(-36vw);
+                        width: 36vw;
                     }
                     .ul-selector {
-                        margin: 20px 0px 0px calc(-38.5vw);
-                        width: 38.8vw;
+                        margin: 25px 0px 0px calc(-37.2vw);
+                        width: 34.5vw;
                     }
                     .choose-box-panel {
                         max-width: 78vw;
@@ -420,12 +467,12 @@ class Selectors extends HTMLElement {
                 }
                 @media (1499px > width >= 1240px) {
                     .selector-input {
-                        margin: -10px 0px 0px calc(-47.5vw);
-                        width: 47.5vw;
+                        margin: -10px 0px 0px calc(-45vw);
+                        width: 45vw;
                     }
                     .ul-selector {
-                        margin: 20px 0px 0px calc(-48.5vw);
-                        width: 45.6vw;
+                        margin: 25px 0px 0px calc(-46.5vw);
+                        width: 43.5vw;
                     }
                     .choose-box-panel {
                         max-width: 1499px;
@@ -437,6 +484,11 @@ class Selectors extends HTMLElement {
                 @media (1240px > width >= 1160px) {
                     .selector {
                         min-width: 300px;
+                    }
+                }
+                @media (1240px > width > 880px) {
+                    #choose-box-region {
+                        margin-left: 0px;
                     }
                 }
                 @media (width <= 880px) {
@@ -452,6 +504,7 @@ class Selectors extends HTMLElement {
             </style>
         `;
         this.HTML = `
+            <div class="background"></div>
             <div class="selectors-panel">
             <div class="selectors date">
                 <div tooltip="введите дату начала поиска" class="selector control-panel__segment date" id="date_from">
@@ -459,14 +512,14 @@ class Selectors extends HTMLElement {
                     <p  class="selector-text">
                         дата от
                     </p>
-                    <input class="calendar" type="date" placeholder="ДД-ММ-ГГ" value="" />
+                    <input class="calendar" type="date" value="" />
                 </div>
                 <div tooltip="введите дату конца поиска" class="selector control-panel__segment date" id="date_till">
                     <span class="selector-icon date"></span>
                     <p  class="selector-text">
                         дата до
                     </p>
-                    <input class="calendar" type="date" placeholder="dd-mm-yy" value="" />
+                    <input class="calendar" type="date" value="" />
                 </div>
             </div>
             </div>
@@ -519,10 +572,10 @@ class Selectors extends HTMLElement {
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-type">
                             <p class="choose-box-type choose-box-selector-text">Тип учебного заведения</p>
+                            <span class="icon selector_icon" id="type_cansel" style="font-family: Iconfont; color: #C3C3C3; font-size: 25px;"></span>
                             <span class="icon reversed selector_icon" id="type_selector_icon"></span>
                             <div class="selector-input-capsul">
-                            <input class="selector-input type-selector-input" type="text" />
-                            <span class="selector-input choose-box-selector-text type_input">Тип учебного заведения</span>
+                                <span class="selector-input choose-box-selector-text type_input">Тип учебного заведения</span>
                             </div>
                             <div class="selector-capsul" id="type-capsul">
                                 <ul class="ul-selector type-selector">
@@ -533,7 +586,7 @@ class Selectors extends HTMLElement {
             }
             return type;
         })()}
-                                    <li class="choose">
+                                    <li class="choose type-choose">
                                         <p>Выбрать</p>
                                     </li>
                                 </ul>
@@ -546,10 +599,11 @@ class Selectors extends HTMLElement {
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-region">
                             <p class="choose-box-type choose-box-selector-text">Регион учебного заведения</p>
+                            <span class="icon selector_icon" id="type_cansel" style="font-family: Iconfont; color: #C3C3C3; font-size: 25px;"></span>
                             <span class="icon reversed selector_icon" id="region_selector_icon"></span>
                             <div class="selector-input-capsul">
-                            <input class="selector-input region-selector-input" type="text" />
-                            <span class="selector-input choose-box-selector-text region_input">Регион учебного заведения</span>
+                                <input class="selector-input region-selector-input" type="text" />
+                                <span class="selector-input choose-box-selector-text region_input">Регион учебного заведения</span>
                             </div>
                             <div class="selector-capsul" id="region-capsul">
                                 <ul class="ul-selector region-selector">
@@ -560,6 +614,9 @@ class Selectors extends HTMLElement {
             }
             return reg;
         })()}
+                                    <li class="choose">
+                                        <p>Выбрать</p>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -620,52 +677,62 @@ class Selectors extends HTMLElement {
             total = this.querySelector("#in_total");
         }
 
+        const type_chooser_border = this.querySelector("#choose-type");
         const type_selector = this.querySelector(".type-selector");
-        type_selector.onclick = () => {
-            console.log(this.isFocusOnType);
-            this.isFocusOnType = true;
-        }
+        const type_selector_icon = this.querySelector("#type_selector_icon");
+        const region_chooser_border = this.querySelector("#choose-region");
+        const region_selector = this.querySelector(".region-selector");
+        const region_selector_icon = this.querySelector("#region_selector_icon");
+        const region_input = this.getElementsByClassName("region_input")[0];
 
-        const type_choose_input = this.querySelector(".type-selector-input");
-        type_choose_input.onfocus = () => {
-            const type_chooser_border = this.querySelector("#choose-type");
-            const type_selector = this.querySelector(".type-selector");
-            const type_selector_icon = this.querySelector("#type_selector_icon");
+        type_chooser_border.onclick = () => {
             type_selector_icon.classList.remove("reversed");
             type_selector.classList.add("visible");
             type_chooser_border.classList.add("choose-box-selector-focus");
-            type_choose_input.classList.add("focus");
+            background.classList.add("visible");
+            type_input.classList.add("type_input_focus");
         }
-        type_choose_input.onblur = () => {
-            if (this.isFocusOnType) {
-                const type_chooser_border = this.querySelector("#choose-type");
-                const type_selector = this.querySelector(".type-selector");
-                const type_selector_icon = this.querySelector("#type_selector_icon");
-                type_selector_icon.classList.add("reversed");
-                type_selector.classList.remove("visible");
-                type_chooser_border.classList.remove("choose-box-selector-focus");
-                type_choose_input.classList.remove("focus");
-            }
-        }
-
         const region_choose_input = this.querySelector(".region-selector-input");
         region_choose_input.onfocus = () => {
-            const region_chooser_border = this.querySelector("#choose-region");
-            const region_selector = this.querySelector(".region-selector");
-            const region_selector_icon = this.querySelector("#region_selector_icon");
             region_selector_icon.classList.remove("reversed");
             region_selector.classList.add("visible");
             region_chooser_border.classList.add("choose-box-selector-focus");
             region_choose_input.classList.add("focus");
+            background.classList.add("visible");
         }
-        region_choose_input.onblur = () => {
-            const region_chooser_border = this.querySelector("#choose-region");
-            const region_selector = this.querySelector(".region-selector");
-            const region_selector_icon = this.querySelector("#region_selector_icon");
-            region_selector_icon.classList.add("reversed");
-            region_selector.classList.remove("visible");
-            region_chooser_border.classList.remove("choose-box-selector-focus");
-            region_choose_input.classList.remove("focus");
+
+        const background = this.querySelector(".background");
+        background.onclick = () => {
+            selection_chose();
+        }
+        const choose_button = this.getElementsByClassName("choose")[0];
+        const type_input = this.getElementsByClassName("type_input")[0];
+        choose_button.onclick = () => {
+            if (this.CHOSEN_TYPES[0] == true) {
+                type_input.innerHTML = this.TYPE_LIST[0][0];
+            }
+            selection_chose();
+        }
+        function selection_chose() {
+            if (type_selector.classList.contains("visible")) {
+                type_selector_icon.classList.add("reversed");
+                type_selector.classList.remove("visible");
+                type_chooser_border.classList.remove("choose-box-selector-focus");
+                type_input.classList.remove("type_input_focus");
+            }
+            else {
+                region_selector_icon.classList.add("reversed");
+                region_selector.classList.remove("visible");
+                region_chooser_border.classList.remove("choose-box-selector-focus");
+                region_choose_input.classList.remove("focus");
+                if (region_choose_input.value == "") {
+                    region_input.innerHTML = "Регион учебного заведения";
+                }
+                else {
+                    region_input.innerHTML = "";
+                }
+            }
+            background.classList.remove("visible");
         }
 
         const region_chooser_input = this.getElementsByClassName("region-selector-input")[0];
@@ -682,6 +749,30 @@ class Selectors extends HTMLElement {
                 region_selector.innerHTML = this.Where(this.REGION_LIST, region_chooser_input.value);
             }
         }
+
+        const check = this.getElementsByClassName("checkbox");
+        Array.from(check).forEach(box => box.onclick = () => {
+            if (box.classList.contains("checked")) {
+                box.classList.remove("checked");
+            }
+            else {
+                box.classList.add("checked");
+            }
+            switch (box.classList[1]) {
+                case "op-" + this.TYPE_LIST[0][1]:
+                    this.CHOSEN_TYPES[0] = !this.CHOSEN_TYPES[0];
+                    break;
+                case "op-" + this.TYPE_LIST[1][1]:
+                    this.CHOSEN_TYPES[1] = !this.CHOSEN_TYPES[1];
+                    break;
+                case "op-" + this.TYPE_LIST[2][1]:
+                    this.CHOSEN_TYPES[2] = !this.CHOSEN_TYPES[2];
+                    break;
+                case "op-" + this.TYPE_LIST[3][1]:
+                    this.CHOSEN_TYPES[3] = !this.CHOSEN_TYPES[3];
+                    break;
+            }
+        });
     }
 }
 

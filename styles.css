@@ -139,36 +139,27 @@ body {
     font-family: Icons;
     src: url("./assets/fonts/icomoon.ttf");
 }
-
 @font-face {
     font-family: Iconfont;
-  src: url('./assets/fonts/fontello.eot?19799490');
-  src: url('./assets/fonts/fontello.eot?19799490#iefix') format('embedded-opentype'),
-       url('./assets/fonts/fontello.woff2?19799490') format('woff2'),
-       url('./assets/fonts/fontello.woff?19799490') format('woff'),
-       url('./assets/fonts/fontello.ttf?19799490') format('truetype'),
-       url('./assets/fonts/fontello.svg?19799490#fontello') format('svg');
-}
-@font-face {
-    font-family: Iconfont;
-    src: url('./assets/fonts/fontello.ttf?2435959');
+    src: url('./assets/fonts/fontello.ttf');
 }
 
-@font-face {
-    font-family: Inter;
-    src: url("./assets/fonts/Inter/Inter-Regular.otf");
-}
-@font-face {
-    font-family: Inter-Medium;
-    src: url("./assets/fonts/Inter/Inter-Medium.otf");
-}
+    @font-face {
+        font-family: Inter;
+        src: url("./assets/fonts/Inter/Inter-Regular.otf");
+    }
 
-@font-face {
-    font-family: Inter-Bold;
-    src: url("./assets/fonts/Inter/Inter-Bold.otf");
-}
+    @font-face {
+        font-family: Inter-Medium;
+        src: url("./assets/fonts/Inter/Inter-Medium.otf");
+    }
 
-*[tooltip] {
+    @font-face {
+        font-family: Inter-Bold;
+        src: url("./assets/fonts/Inter/Inter-Bold.otf");
+    }
+
+    *[tooltip] {
     position: relative;
     overflow: visible;
     width: 100%;
@@ -212,7 +203,12 @@ body {
 .third-panel__tab [tooltip]:hover::before {
     left: calc(40/881*100vw);
 }
-
+.third-panel__tab.q [tooltip]:hover::before {
+    transform: translateY(calc(95px));
+}
+.third-panel__tab.q [tooltip]:hover::after {
+    transform: translateY(calc(100% + 10px));
+}
 #fio [tooltip]:hover::before {
 }
 .third-panel__tab [tooltip]:hover::after {
@@ -226,7 +222,6 @@ body {
 span.icon {
     display: inline;
     font-family: Icons;
-    color: white;
     width: fit-content;
     height: fit-content;
     box-sizing: border-box;
