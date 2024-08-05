@@ -25,12 +25,13 @@ class DrawStrategy {
 }
 
 class DefaultDrawStrategy extends DrawStrategy {
-    constructor(container, pagesToDraw) {
+    constructor(container, pagesToDraw, currentPage) {
         super(container);
         this.pagesToDraw = pagesToDraw;
+        this.currentPage = currentPage;
     }
     drawPages() {
-        this.drawFromTo(1, this.pagesToDraw);
+        this.drawFromTo(1, this.pagesToDraw, this.currentPage);
     }
 }
 
@@ -155,8 +156,9 @@ class PaginatorRenderer {
                     gap: 10px;
                 }
                 .pagination {
-                    width: 100%;
                     margin-top: 70px;
+                    margin-left: 20px;
+                    margin-right: 20px;
                     height: 50px;
                     display: flex;
                     flex-direction: row;
@@ -264,9 +266,9 @@ class PaginatorRenderer {
                         <div class="pagination__page-number page-control-element">
                             <p style="line-height: 1px; height: 3px;">First</p>
                         </div>
-                        <!--<div class="pagination__page-number page-control-element">
+                        <div class="pagination__page-number page-control-element">
                             <p>Last</p>
-                        </div>-->
+                        </div>
                         <div class="pagination__page-number page-control-element">
                             <span class="icon"></span>
                         </div>
@@ -304,7 +306,7 @@ class PaginatorRenderer {
             new OverflowDrawStrategyWithThresholds(this.container, numberOfPages, currentPage, numberOfPagesCanDraw).drawPages();
         } else {
             console.log(`${numberOfPages} < ${numberOfPagesCanDraw} default draw`);
-            new DefaultDrawStrategy(this.container, numberOfPages).drawPages();
+            new DefaultDrawStrategy(this.container, numberOfPages, currentPage).drawPages();
         }
         if (currentPage == 1) {
             pageControlElements[BACK].classList.add("inactive");
@@ -327,7 +329,7 @@ class Paginator extends HTMLElement {
     }
     connectedCallback() {
         this.paginationRender.initialRender();
-        this.paginationRender.render();
+        this.paginationRender.render(this.currentPage);
     }
 
     update() {

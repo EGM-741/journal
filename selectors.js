@@ -1,4 +1,8 @@
 class Selectors extends HTMLElement {
+    connectedCallback() {
+        this.render();
+        this.setup();
+    }
     COUNTER = 0;
     STYLE = ``;
     HTML = ``;
@@ -136,21 +140,35 @@ class Selectors extends HTMLElement {
         this.REGION_LIST[15],
         this.REGION_LIST[20]
     ];
+    CURRENT_REGION_LIST = [];
     TYPE_LIST = [
         ["По всем",                             "common-type"],
         ["Школы, гимназии",                     "school-type"],
         ["Средние специальные учебные заведения","prof-type"],
         ["Высшие специальные учебные заведения","hight-type"]
     ];
-    OPTION_TEMPLATE = (id, region) => {
-        return `
-        <li class="option">
-            <p><label for="op_reg${id}">${region}</label></p>
-            <div style="position: relative;">
-            <span class="checkbox op-${id}" id="op-${id}"></span>
-            </div>
-        </li>
-        `;
+    OPTION_TEMPLATE = (id, region, k) => {
+        if (k == 0) {
+            return `
+            <li class="option">
+                <p><label for="op_reg${id}">${region}</label></p>
+                <div style="position: relative;">
+                <span class="checkbox type-checkbox op-${id}" id="op-${id}"></span>
+                </div>
+            </li>
+            `;
+        }
+        else {
+            this.CURRENT_REGION_LIST.push([region, id]);
+            return `
+            <li class="option">
+                <p><label for="op_reg${id}">${region}</label></p>
+                <div style="position: relative;">
+                <span class="checkbox region-checkbox op-${id}" id="op-${id}"></span>
+                </div>
+            </li>
+            `;
+        }
     }
     CHOSEN_TYPES = [
         false,
@@ -158,8 +176,23 @@ class Selectors extends HTMLElement {
         false,
         false
     ];
+    CHOSEN_REGIONS = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    ];
     Where = (list, condition) => {
-        let new_list = "";
+        let new_list = `
+                    <li class="opt-placeholder"> Выберите вариант или продолжите ввод
+                    </li>
+                    `;
         let isContain = new Boolean(false);
         let symbols = "";
         let j = 0;
@@ -187,14 +220,26 @@ class Selectors extends HTMLElement {
                 }
             }
         }
-        if (new_list == "") {
-            new_list += this.OPTION_TEMPLATE("0", "");
-        }
         return new_list;
     }
-    connectedCallback() {
-        this.render();
-        this.setup();
+
+    checkboxEvent = (box) => {
+        if (box.classList.contains("checked")) {
+            box.classList.remove("checked");
+        }
+        else {
+            box.classList.add("checked");
+        }
+        for (var i = 0; i < this.CHOSEN_TYPES.length; i++) {
+            if (box.classList[2] == "op-" + this.TYPE_LIST[i][1]) {
+                this.CHOSEN_TYPES[i] = !this.CHOSEN_TYPES[i];
+            }
+        }
+        for (var i = 0; i < this.CHOSEN_REGIONS.length; i++) {
+            if (box.classList[2] == "op-" + this.CURRENT_REGION_LIST[i][1]) {
+                this.CHOSEN_REGIONS[i] = !this.CHOSEN_REGIONS[i];
+            }
+        }
     }
     render() {
         this.STYLE = `
@@ -235,7 +280,7 @@ class Selectors extends HTMLElement {
                     cursor: pointer;
                 }
                 .selector_icon {
-                    margin-right: 2vw;
+                    margin-right: 1vw;
                 }
                     .selector#deselect:hover {
                         color: rgb(255,0,0);
@@ -320,7 +365,7 @@ class Selectors extends HTMLElement {
                     }
                 .choose-box-selector-text {
                     margin-left: 10px;
-                    visibility: hidden;
+                    color: white;
                 }
                 .selector-capsul {
                     position: relative;
@@ -344,14 +389,23 @@ class Selectors extends HTMLElement {
                     border: none;
                     visibility: visible;
                 }
-                    .type_input_focus {
+                    .choose-box-selector.type_input_focus {
+                        border: solid 1px #00B0D9;
+                    }
+                    .type_input.type_input_focus {
                         font-size: 12px;
-                        color: #111;
+                        color: #7D7D7D;
                         transform: translateY(-10px);
+                    }
+                    .type_input.empty {
+                        color: #7D7D7D;
+                    }
+                    .region_input.empty {
+                        color: #7D7D7D;
                     }
                 .region-selector-input:focus ~ .region_input {
                     font-size: 12px;
-                    color: #111;
+                    color: #7D7D7D;
                     transform: translateY(-10px);
                 }
                 .focus {
@@ -385,10 +439,12 @@ class Selectors extends HTMLElement {
                 .type_input {
                     transition: 0.2s;
                     pointer-events: none;
+                    color: #111;
                 }
                 .region_input {
                     transition: 0.2s;
                     pointer-events: none;
+                    color: #111;
                 }
                 .ul-selector {
                     position: absolute;
@@ -433,10 +489,21 @@ class Selectors extends HTMLElement {
                 .choose:hover {
                     color: #FFE200;
                 }
+                span.icon.cansel {
+                    font-family: Iconfont;
+                    color: #C3C3C3;
+                    font-size: 25px;
+                }
+                span.icon.cansel:hover {
+                    color: #939393;
+                }
+                .opt-placeholder {
+                    color: #7D7D7D;
+                }
                 @media (width > 1599px) {
                     .selector-input {
                         margin: -10px 0px 0px calc(-36vw);
-                        width: 36vw;
+                        width: 30vw;
                     }
                     .ul-selector {
                         margin: 25px 0px 0px calc(-37.2vw);
@@ -452,7 +519,7 @@ class Selectors extends HTMLElement {
                 @media (1599px >= width >= 1499px) {
                     .selector-input {
                         margin: -10px 0px 0px calc(-36vw);
-                        width: 36vw;
+                        width: 30vw;
                     }
                     .ul-selector {
                         margin: 25px 0px 0px calc(-37.2vw);
@@ -468,7 +535,7 @@ class Selectors extends HTMLElement {
                 @media (1499px > width >= 1240px) {
                     .selector-input {
                         margin: -10px 0px 0px calc(-45vw);
-                        width: 45vw;
+                        width: 35vw;
                     }
                     .ul-selector {
                         margin: 25px 0px 0px calc(-46.5vw);
@@ -572,17 +639,18 @@ class Selectors extends HTMLElement {
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-type">
                             <p class="choose-box-type choose-box-selector-text">Тип учебного заведения</p>
-                            <span class="icon selector_icon" id="type_cansel" style="font-family: Iconfont; color: #C3C3C3; font-size: 25px;"></span>
+                            <span class="icon selector_icon cansel" id="type-cansel"></span>
                             <span class="icon reversed selector_icon" id="type_selector_icon"></span>
                             <div class="selector-input-capsul">
-                                <span class="selector-input choose-box-selector-text type_input">Тип учебного заведения</span>
+                                <span class="selector-input choose-box-selector-text type_input empty">Тип учебного заведения</span>
                             </div>
                             <div class="selector-capsul" id="type-capsul">
                                 <ul class="ul-selector type-selector">
+                                    <li class="opt-placeholder">Выберите вариант</li>
         ${(() => {
             let type = "";
             for (const tab of this.TYPE_LIST.slice(0, 10)) {
-                type += this.OPTION_TEMPLATE(tab[1], tab[0]);
+                type += this.OPTION_TEMPLATE(tab[1], tab[0],0);
             }
             return type;
         })()}
@@ -599,18 +667,20 @@ class Selectors extends HTMLElement {
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-region">
                             <p class="choose-box-type choose-box-selector-text">Регион учебного заведения</p>
-                            <span class="icon selector_icon" id="type_cansel" style="font-family: Iconfont; color: #C3C3C3; font-size: 25px;"></span>
+                            <span class="icon selector_icon cansel" id="region-cansel"></span>
                             <span class="icon reversed selector_icon" id="region_selector_icon"></span>
                             <div class="selector-input-capsul">
                                 <input class="selector-input region-selector-input" type="text" />
-                                <span class="selector-input choose-box-selector-text region_input">Регион учебного заведения</span>
+                                <span class="selector-input choose-box-selector-text region_input empty">Регион учебного заведения</span>
                             </div>
                             <div class="selector-capsul" id="region-capsul">
                                 <ul class="ul-selector region-selector">
+                                    <li class="opt-placeholder">Выберите вариант или продолжите ввод
+                                    </li>
         ${(() => {
             let reg = "";
             for (const tab of this.DEFAULT_REGION_LIST.slice(0, 10)) {
-                reg += this.OPTION_TEMPLATE(tab[1], tab[0]);
+                reg += this.OPTION_TEMPLATE(tab[1], tab[0],1);
             }
             return reg;
         })()}
@@ -677,102 +747,145 @@ class Selectors extends HTMLElement {
             total = this.querySelector("#in_total");
         }
 
-        const type_chooser_border = this.querySelector("#choose-type");
+        const type_chooser_border = this.querySelector(".choose-box-selector-text");
         const type_selector = this.querySelector(".type-selector");
         const type_selector_icon = this.querySelector("#type_selector_icon");
+        const type_cansel_button = this.querySelector("span.icon.cansel#type-cansel");
+        const type_input = this.getElementsByClassName("type_input")[0];
+        const choose_type = this.querySelector("#choose-type");
         const region_chooser_border = this.querySelector("#choose-region");
         const region_selector = this.querySelector(".region-selector");
         const region_selector_icon = this.querySelector("#region_selector_icon");
+        const region_cansel_button = this.querySelector("span.icon.cansel#region-cansel");
         const region_input = this.getElementsByClassName("region_input")[0];
+        const region_choose_input = this.querySelector(".region-selector-input");
+        const choose_region = this.querySelector("#choose-region");
+        const background = this.querySelector(".background");
+        const choose_button = this.getElementsByClassName("choose")[0];
+        const check = this.getElementsByClassName("checkbox");
+        const checkType = this.getElementsByClassName("type-checkbox");
+        const checkRegion = this.getElementsByClassName("checkbox");
 
+        type_cansel_button.onclick = () => {
+            this.CHOSEN_TYPES = [false, false, false, false];
+            Array.from(checkType).forEach(box => {
+                box.classList.remove("checked");
+            });
+            type_input.innerHTML = "Тип учебного заведения";
+            type_input.classList.add("empty");
+        }
+        region_cansel_button.onclick = () => {
+            this.CHOSEN_REGIONS = [false, false, false, false, false, false, false, false, false, false];
+            Array.from(checkRegion).forEach(box => {
+                box.classList.remove("checked");
+            });
+            region_input.innerHTML = "Регион учебного заведения";
+            region_input.classList.add("empty");
+        }
         type_chooser_border.onclick = () => {
             type_selector_icon.classList.remove("reversed");
             type_selector.classList.add("visible");
             type_chooser_border.classList.add("choose-box-selector-focus");
             background.classList.add("visible");
             type_input.classList.add("type_input_focus");
+            choose_type.classList.add("type_input_focus");
         }
-        const region_choose_input = this.querySelector(".region-selector-input");
         region_choose_input.onfocus = () => {
             region_selector_icon.classList.remove("reversed");
             region_selector.classList.add("visible");
             region_chooser_border.classList.add("choose-box-selector-focus");
             region_choose_input.classList.add("focus");
             background.classList.add("visible");
+            choose_region.classList.add("type_input_focus");
         }
 
-        const background = this.querySelector(".background");
         background.onclick = () => {
-            selection_chose();
+            selection_chose(this.CHOSEN_REGIONS, this.CHOSEN_TYPES, this.TYPE_LIST, this.CURRENT_REGION_LIST);
         }
-        const choose_button = this.getElementsByClassName("choose")[0];
-        const type_input = this.getElementsByClassName("type_input")[0];
         choose_button.onclick = () => {
-            if (this.CHOSEN_TYPES[0] == true) {
-                type_input.innerHTML = this.TYPE_LIST[0][0];
-            }
-            selection_chose();
+            selection_chose(this.CHOSEN_REGIONS, this.CHOSEN_TYPES, this.TYPE_LIST, this.CURRENT_REGION_LIST);
         }
-        function selection_chose() {
-            if (type_selector.classList.contains("visible")) {
-                type_selector_icon.classList.add("reversed");
-                type_selector.classList.remove("visible");
-                type_chooser_border.classList.remove("choose-box-selector-focus");
-                type_input.classList.remove("type_input_focus");
-            }
-            else {
-                region_selector_icon.classList.add("reversed");
-                region_selector.classList.remove("visible");
-                region_chooser_border.classList.remove("choose-box-selector-focus");
-                region_choose_input.classList.remove("focus");
-                if (region_choose_input.value == "") {
-                    region_input.innerHTML = "Регион учебного заведения";
-                }
-                else {
-                    region_input.innerHTML = "";
-                }
-            }
-            background.classList.remove("visible");
-        }
-
-        const region_chooser_input = this.getElementsByClassName("region-selector-input")[0];
-        region_chooser_input.onkeyup = () => {
+        region_choose_input.onkeyup = () => {
             const region_selector = this.querySelector(".region-selector");
-            if (region_chooser_input.value == "") {
-                let reg = "";
+            let reg = `
+                    <li class="opt-placeholder"> Выберите вариант или продолжите ввод
+                    </li>
+                    `;
+            if (region_choose_input.value == "") {
                 for (const tab of this.DEFAULT_REGION_LIST.slice(0, 10)) {
                     reg += this.OPTION_TEMPLATE(tab[1], tab[0]);
                 }
                 region_selector.innerHTML = reg;
             }
             else {
-                region_selector.innerHTML = this.Where(this.REGION_LIST, region_chooser_input.value);
+                region_selector.innerHTML = this.Where(this.REGION_LIST, region_choose_input.value);
             }
         }
 
-        const check = this.getElementsByClassName("checkbox");
         Array.from(check).forEach(box => box.onclick = () => {
-            if (box.classList.contains("checked")) {
-                box.classList.remove("checked");
+            this.checkboxEvent(box);
+        });
+
+        function selection_chose(CHOSEN_REGIONS, CHOSEN_TYPES, TYPE_LIST, REGION_LIST) {
+            if (type_selector.classList.contains("visible")) {
+                choose_type.classList.remove("type_input_focus");
+                if (CHOSEN_TYPES[0] == true) {
+                    type_input.innerHTML = TYPE_LIST[0][0];
+                    type_input.classList.remove("empty");
+                }
+                else if (CHOSEN_TYPES[1] + CHOSEN_TYPES[2] + CHOSEN_TYPES[3] > 1) {
+                    type_input.innerHTML = "Тип учебного заведения (выбрано: " +
+                        (CHOSEN_TYPES[1] + CHOSEN_TYPES[2] + CHOSEN_TYPES[3]) + ")";
+                    type_input.classList.remove("empty");
+                }
+                else if (CHOSEN_TYPES[1] + CHOSEN_TYPES[2] + CHOSEN_TYPES[3] == 1) {
+                    type_input.innerHTML =
+                        (CHOSEN_TYPES[1]) ? "Школы, гимназии" :
+                        ((CHOSEN_TYPES[2]) ? "Средние специальные учебные заведения" :
+                                ((CHOSEN_TYPES[3]) ? "Высшие специальные учебные заведения" : false));
+                    type_input.classList.remove("empty");
+                }
+                else {
+                    type_input.innerHTML = "Тип учебного заведения";
+                    type_input.classList.add("empty");
+                }
+                type_selector_icon.classList.add("reversed");
+                type_selector.classList.remove("visible");
+                type_chooser_border.classList.remove("choose-box-selector-focus");
+                type_input.classList.remove("type_input_focus");
             }
             else {
-                box.classList.add("checked");
+                choose_region.classList.remove("type_input_focus");
+                if (CHOSEN_REGIONS[0] + CHOSEN_REGIONS[1] + CHOSEN_REGIONS[2] + CHOSEN_REGIONS[3] +
+                    CHOSEN_REGIONS[4] + CHOSEN_REGIONS[5] + CHOSEN_REGIONS[6] + 
+                    CHOSEN_REGIONS[7] + CHOSEN_REGIONS[8] + CHOSEN_REGIONS[9] > 1) {
+                    region_input.innerHTML = "Регион учебного заведения (выбрано: " +
+                        (CHOSEN_REGIONS[0] + CHOSEN_REGIONS[1] + CHOSEN_REGIONS[2] + CHOSEN_REGIONS[3] +
+                            CHOSEN_REGIONS[4] + CHOSEN_REGIONS[5] + CHOSEN_REGIONS[6] +
+                            CHOSEN_REGIONS[7] + CHOSEN_REGIONS[8] + CHOSEN_REGIONS[9]) + ")";
+                    region_input.classList.remove("empty");
+                }
+                else if (CHOSEN_REGIONS[0] + CHOSEN_REGIONS[1] + CHOSEN_REGIONS[2] + CHOSEN_REGIONS[3] +
+                    CHOSEN_REGIONS[4] + CHOSEN_REGIONS[5] + CHOSEN_REGIONS[6] + 
+                    CHOSEN_REGIONS[7] + CHOSEN_REGIONS[8] + CHOSEN_REGIONS[9] == 1) {
+                    region_input.innerHTML = "";
+                    for (var i = 1; i < 10; i++) {
+                        console.log(REGION_LIST[i][0].repeat(CHOSEN_REGIONS[i]));
+                        region_input.innerHTML += REGION_LIST[i][0].repeat(CHOSEN_REGIONS[i]);
+                    }
+                    region_input.classList.remove("empty");
+                }
+                else {
+                    region_input.innerHTML = "Регион учебного заведения";
+                    region_input.classList.add("empty");
+                }
+                region_selector_icon.classList.add("reversed");
+                region_selector.classList.remove("visible");
+                region_chooser_border.classList.remove("choose-box-selector-focus");
+                region_choose_input.classList.remove("focus");
             }
-            switch (box.classList[1]) {
-                case "op-" + this.TYPE_LIST[0][1]:
-                    this.CHOSEN_TYPES[0] = !this.CHOSEN_TYPES[0];
-                    break;
-                case "op-" + this.TYPE_LIST[1][1]:
-                    this.CHOSEN_TYPES[1] = !this.CHOSEN_TYPES[1];
-                    break;
-                case "op-" + this.TYPE_LIST[2][1]:
-                    this.CHOSEN_TYPES[2] = !this.CHOSEN_TYPES[2];
-                    break;
-                case "op-" + this.TYPE_LIST[3][1]:
-                    this.CHOSEN_TYPES[3] = !this.CHOSEN_TYPES[3];
-                    break;
-            }
-        });
+            background.classList.remove("visible");
+        }
     }
 }
 
