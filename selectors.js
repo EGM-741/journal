@@ -254,7 +254,7 @@ class Selectors extends HTMLElement {
                     z-index: 2;
                 }
                 .selectors-panel {
-                    padding: 0px 20px 0px 20px;
+                    margin: 0px 20px 0px 20px;
                 }
                 .selectors {
                     display: flex;
@@ -366,6 +366,9 @@ class Selectors extends HTMLElement {
                 .choose-box-selector-text {
                     margin-left: 10px;
                     color: white;
+                    width: 30vw;
+                    height: 50px;
+                    display: flex;
                 }
                 .selector-capsul {
                     position: relative;
@@ -391,6 +394,8 @@ class Selectors extends HTMLElement {
                 }
                     .choose-box-selector.type_input_focus {
                         border: solid 1px #00B0D9;
+                        z-index: 20;
+                        background-color: white;
                     }
                     .type_input.type_input_focus {
                         font-size: 12px;
@@ -562,6 +567,9 @@ class Selectors extends HTMLElement {
                     .selectors-panel {
                         padding-top: 40px;
                     }
+                    #choose-box-region {
+                        margin-left: 0px;
+                    }
                 }
                 @media (width <= 640px) {
                     .selectors-panel {
@@ -638,7 +646,7 @@ class Selectors extends HTMLElement {
                             Тип учебного заведения
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-type">
-                            <p class="choose-box-type choose-box-selector-text">Тип учебного заведения</p>
+                            <p class="choose-box-type choose-box-selector-text"></p>
                             <span class="icon selector_icon cansel" id="type-cansel"></span>
                             <span class="icon reversed selector_icon" id="type_selector_icon"></span>
                             <div class="selector-input-capsul">
@@ -666,7 +674,7 @@ class Selectors extends HTMLElement {
                             Регион учебного заведения
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-region">
-                            <p class="choose-box-type choose-box-selector-text">Регион учебного заведения</p>
+                            <p class="choose-box-type choose-box-selector-text"></p>
                             <span class="icon selector_icon cansel" id="region-cansel"></span>
                             <span class="icon reversed selector_icon" id="region_selector_icon"></span>
                             <div class="selector-input-capsul">
@@ -761,7 +769,7 @@ class Selectors extends HTMLElement {
         const region_choose_input = this.querySelector(".region-selector-input");
         const choose_region = this.querySelector("#choose-region");
         const background = this.querySelector(".background");
-        const choose_button = this.getElementsByClassName("choose")[0];
+        const choose_button = this.getElementsByClassName("choose");
         const check = this.getElementsByClassName("checkbox");
         const checkType = this.getElementsByClassName("type-checkbox");
         const checkRegion = this.getElementsByClassName("checkbox");
@@ -802,9 +810,9 @@ class Selectors extends HTMLElement {
         background.onclick = () => {
             selection_chose(this.CHOSEN_REGIONS, this.CHOSEN_TYPES, this.TYPE_LIST, this.CURRENT_REGION_LIST);
         }
-        choose_button.onclick = () => {
+        Array.from(choose_button).forEach(button => button.onclick = () => {
             selection_chose(this.CHOSEN_REGIONS, this.CHOSEN_TYPES, this.TYPE_LIST, this.CURRENT_REGION_LIST);
-        }
+        })
         region_choose_input.onkeyup = () => {
             const region_selector = this.querySelector(".region-selector");
             let reg = `
@@ -869,8 +877,7 @@ class Selectors extends HTMLElement {
                     CHOSEN_REGIONS[4] + CHOSEN_REGIONS[5] + CHOSEN_REGIONS[6] + 
                     CHOSEN_REGIONS[7] + CHOSEN_REGIONS[8] + CHOSEN_REGIONS[9] == 1) {
                     region_input.innerHTML = "";
-                    for (var i = 1; i < 10; i++) {
-                        console.log(REGION_LIST[i][0].repeat(CHOSEN_REGIONS[i]));
+                    for (var i = 0; i < 10; i++) {
                         region_input.innerHTML += REGION_LIST[i][0].repeat(CHOSEN_REGIONS[i]);
                     }
                     region_input.classList.remove("empty");
