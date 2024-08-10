@@ -14,11 +14,11 @@ class Journal extends HTMLElement {
         false
     ]
     EDU_LIST = [
-        [5258024460, "Действующее", "НМК", "ГБПОУ НО НМК", 'Государственное бюджетное профессиональное образовательное учреждение Нижегородской области "Нижегородский медицинский колледж"',
+        ["5258024460", "Действующее", "НМК", "ГБПОУ НО НМК", 'Государственное бюджетное профессиональное образовательное учреждение Нижегородской области "Нижегородский медицинский колледж"',
             "г Нижний Новгород, ул Июльских Дней, д 8"],
-        [5209004535, "31 декабря 2013 г.", "МУ(Т)", 'ГБОУ СПО НО "ВМУ(Т)"', 'Государственное бюджетное образовательное учреждение среднего профессионального образования нижегородской области "Ветлужское медицинское училище (техникум)"',
+        ["5209004535", "31 декабря 2013 г.", "МУ(Т)", 'ГБОУ СПО НО "ВМУ(Т)"', 'Государственное бюджетное образовательное учреждение среднего профессионального образования нижегородской области "Ветлужское медицинское училище (техникум)"',
             "Нижегородская область, г. Ветлуга, ул. Ленина, д.4"],
-        [5262034750, "Действующее", "НРТК", 'ГБПОУ "НРТК"', 'Государственное бюджетное профессиональное образовательное учреждение "Нижегородский радиотехнический колледж"',
+        ["5262034750", "Действующее", "НРТК", 'ГБПОУ "НРТК"', 'Государственное бюджетное профессиональное образовательное учреждение "Нижегородский радиотехнический колледж"',
             "г Нижний Новгород, ул Студенческая, д. 6"]
     ]
     OPTION_TEMPLATE = (id, region) => {
@@ -44,6 +44,40 @@ class Journal extends HTMLElement {
             }
         }
     }
+    sort = (parameter_number, statement, LIST) => {
+        let NEW_LIST = [];
+        let isFound = true;
+        for (var i = 0; i < LIST.length; i++) {
+            isFound = true;
+            for (var j = 0; j < statement.length; j++) {
+                if (parameter_number == 1) {
+                    if (statement == "По всем") {
+                        continue;
+                    } else if (statement == "Действующие" &&
+                        LIST[i][parameter_number] == "Действующее") {
+                        continue;
+                    } else if (statement == "Ликвидированные" &&
+                        Array.from(Array(10).keys()).indexOf(Number(LIST[i][parameter_number][0])) != -1) {
+                        continue;
+                    } else {
+                        isFound = false;
+                    }
+                } else {
+                    console.log(statement, LIST[i][parameter_number]);
+                    console.log(statement[j], LIST[i][parameter_number][j]);
+
+                    if (statement[j] != LIST[i][parameter_number][j]) {
+                    isFound = false;
+                    break;
+                    }
+                }
+            }
+            if (isFound) {
+                NEW_LIST.push(LIST[i]);
+            }
+        }
+        return NEW_LIST;
+    }
     render() {
         const STYLE = `
             <style>
@@ -60,7 +94,6 @@ class Journal extends HTMLElement {
                     display: contents;
                 }
                 .table.edu {
-                    max-width: 1700px;
                     margin-top: 27px;
                     padding-left: 20px;
                     padding-right: 20px;
@@ -233,9 +266,19 @@ class Journal extends HTMLElement {
         }
         background.onclick = () => {
             save(this.CHOSEN_STATUS);
+            let current_list = this.EDU_LIST;
+            Array.from(selector_pull).forEach(s => {
+                current_list = this.sort(selector_pull.indexOf(s), s.value ?? s.innerHTML, current_list);
+            });
+            create_table(current_list);
         }
         status_selector_button.onclick = () => {
             save(this.CHOSEN_STATUS);
+            let current_list = this.EDU_LIST;
+            Array.from(selector_pull).forEach(s => {
+                current_list = this.sort(selector_pull.indexOf(s), s.value ?? s.innerHTML, current_list);
+            });
+            create_table(current_list);
         }
         function save(CHOSEN_STATUS) {
             status_column.classList.remove("search_active");
@@ -256,6 +299,23 @@ class Journal extends HTMLElement {
             background.style.visibility = "hidden";
             status_selector.style.visibility = "hidden";
         }
+
+        const inn_selector = this.querySelector("#inn");
+        const name_selector = this.querySelector("#name");
+        const short_name_selector = this.querySelector("#short-name");
+        const full_name_selector = this.querySelector("#full-name");
+        const address_selector = this.querySelector("#address");
+
+        const selector_pull = [inn_selector, status_selector_text, name_selector,
+            full_name_selector, short_name_selector, address_selector];
+        Array.from(selector_pull).forEach(selector => selector.onkeyup = () => {
+            let current_list = this.EDU_LIST;
+            Array.from(selector_pull).forEach(s => {
+                current_list = this.sort(selector_pull.indexOf(s), s.value ?? s.innerHTML, current_list);
+            });
+            create_table(current_list);
+        });
+
         create_table(this.EDU_LIST);
         function create_table(LIST) {
             let raw_strings = "";

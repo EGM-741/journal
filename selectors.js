@@ -194,7 +194,6 @@ class Selectors extends HTMLElement {
                     </li>
                     `;
         let isContain = new Boolean(false);
-        let symbols = "";
         let j = 0;
         for (const tab of list.slice(0, list.length)) {
             if (j < 10) {
@@ -206,7 +205,6 @@ class Selectors extends HTMLElement {
                 while (i < condition.length) {
                     if (condition[i] === tab[0][i] || condition[i] === tab[2][i]) {
                         isContain = new Boolean(true);
-                        symbols += condition[i];
                     }
                     else {
                         isContain = new Boolean(false);
@@ -337,9 +335,6 @@ class Selectors extends HTMLElement {
                 .choose-box-type, .choose-box-region {
                     flex: 1;
                 }
-                #choose-box-region {
-                    margin-left: 50px;
-                }
                 .choose-box-selector {
                     position: relative;
                     align-items: center;
@@ -364,7 +359,6 @@ class Selectors extends HTMLElement {
                         border-color: #00B0D9;
                     }
                 .choose-box-selector-text {
-                    margin-left: 10px;
                     color: white;
                     width: 30vw;
                     height: 50px;
@@ -455,13 +449,13 @@ class Selectors extends HTMLElement {
                     position: absolute;
                     visibility: hidden;
                     color: black;
-                    width: 60vw;
+                    width: 64vw;
                     border: 1px;
                     border-style: solid;
                     border-color: #00B0D9;
                     background-color: white;
-                    margin: 25px 0px 0px calc(-63.6vw);
-                    padding: 10px 22px 10px 18px;
+                    margin: 25px 0px 0px calc(0vw);
+                    padding: 0px 0px 10px 0px;
                 }
                 ul.type-selector {
                     z-index: 3;
@@ -477,6 +471,8 @@ class Selectors extends HTMLElement {
                     height: 45px;
                     font-family: 'Inter';
                     font-size: 20px;
+                    margin-left: 18px;
+                    margin-right: 22px;
                 }
                 .option {
                     display: flex;
@@ -504,15 +500,38 @@ class Selectors extends HTMLElement {
                 }
                 .opt-placeholder {
                     color: #7D7D7D;
+                    margin-top: 10px;
                 }
-                @media (width > 1599px) {
+                @media (width > 1900px) {
                     .selector-input {
-                        margin: -10px 0px 0px calc(-36vw);
+                        margin: -10px 0px 0px calc(15px);
                         width: 30vw;
                     }
+                    .selector#delete {
+                        min-width: 90vw;
+                    }
                     .ul-selector {
-                        margin: 25px 0px 0px calc(-37.2vw);
-                        width: 34.5vw;
+                        margin: 25px 0px 0px calc(0w);
+                        width: 38.8vw;
+                    }
+                    .choose-box-panel {
+                        max-width: 78vw;
+                    }
+                    .selector {
+                        min-width: 370px;
+                    }
+                }
+                @media (1900px >= width > 1599px) {
+                    .selector-input {
+                        margin: -10px 0px 0px calc(15px);
+                        width: 30vw;
+                    }
+                    .selector#delete {
+                        min-width: 70vw;
+                    }
+                    .ul-selector {
+                        margin: 25px 0px 0px calc(0vw);
+                        width: 38.8vw;
                     }
                     .choose-box-panel {
                         max-width: 78vw;
@@ -523,12 +542,15 @@ class Selectors extends HTMLElement {
                 }
                 @media (1599px >= width >= 1499px) {
                     .selector-input {
-                        margin: -10px 0px 0px calc(-36vw);
+                        margin: -10px 0px 0px calc(15px);
                         width: 30vw;
                     }
+                    .selector#delete {
+                        min-width: 70vw;
+                    }
                     .ul-selector {
-                        margin: 25px 0px 0px calc(-37.2vw);
-                        width: 34.5vw;
+                        margin: 25px 0px 0px calc(0vw);
+                        width: 38.8vw;
                     }
                     .choose-box-panel {
                         max-width: 78vw;
@@ -539,12 +561,12 @@ class Selectors extends HTMLElement {
                 }
                 @media (1499px > width >= 1240px) {
                     .selector-input {
-                        margin: -10px 0px 0px calc(-45vw);
-                        width: 35vw;
+                        margin: -10px 0px 0px calc(15px);
+                        width: 40vw;
                     }
                     .ul-selector {
-                        margin: 25px 0px 0px calc(-46.5vw);
-                        width: 43.5vw;
+                        margin: 25px 0px 0px calc(0vw);
+                        width: 48vw;
                     }
                     .choose-box-panel {
                         max-width: 1499px;
@@ -581,7 +603,7 @@ class Selectors extends HTMLElement {
         this.HTML = `
             <div class="background"></div>
             <div class="selectors-panel">
-            <div class="selectors date">
+            <div class="selectors forms">
                 <div tooltip="введите дату начала поиска" class="selector control-panel__segment date" id="date_from">
                     <span class="selector-icon date"></span>
                     <p  class="selector-text">
@@ -596,10 +618,6 @@ class Selectors extends HTMLElement {
                     </p>
                     <input class="calendar" type="date" value="" />
                 </div>
-            </div>
-            </div>
-            <div class="selectors-panel">
-            <div class="selectors forms">
                 <div tooltip="добавить юридическую форму" class="selector control-panel__segment" id="add_new">
                     <span class="selector-icon add_new">+</span>
                     <p  class="selector-text">
@@ -646,12 +664,6 @@ class Selectors extends HTMLElement {
                             Тип учебного заведения
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-type">
-                            <p class="choose-box-type choose-box-selector-text"></p>
-                            <span class="icon selector_icon cansel" id="type-cansel"></span>
-                            <span class="icon reversed selector_icon" id="type_selector_icon"></span>
-                            <div class="selector-input-capsul">
-                                <span class="selector-input choose-box-selector-text type_input empty">Тип учебного заведения</span>
-                            </div>
                             <div class="selector-capsul" id="type-capsul">
                                 <ul class="ul-selector type-selector">
                                     <li class="opt-placeholder">Выберите вариант</li>
@@ -667,6 +679,12 @@ class Selectors extends HTMLElement {
                                     </li>
                                 </ul>
                             </div>
+                            <div class="selector-input-capsul">
+                                <span class="selector-input choose-box-selector-text type_input empty">Тип учебного заведения</span>
+                            </div>
+                            <p class="choose-box-type choose-box-selector-text"></p>
+                            <span class="icon selector_icon cansel" id="type-cansel"></span>
+                            <span class="icon reversed selector_icon" id="type_selector_icon"></span>
                         </div>
                     </div>
                     <div class="choose-box-type" id="choose-box-region">
@@ -674,13 +692,6 @@ class Selectors extends HTMLElement {
                             Регион учебного заведения
                         </div>
                         <div class="choose-box-type choose-box-selector" id="choose-region">
-                            <p class="choose-box-type choose-box-selector-text"></p>
-                            <span class="icon selector_icon cansel" id="region-cansel"></span>
-                            <span class="icon reversed selector_icon" id="region_selector_icon"></span>
-                            <div class="selector-input-capsul">
-                                <input class="selector-input region-selector-input" type="text" />
-                                <span class="selector-input choose-box-selector-text region_input empty">Регион учебного заведения</span>
-                            </div>
                             <div class="selector-capsul" id="region-capsul">
                                 <ul class="ul-selector region-selector">
                                     <li class="opt-placeholder">Выберите вариант или продолжите ввод
@@ -697,6 +708,13 @@ class Selectors extends HTMLElement {
                                     </li>
                                 </ul>
                             </div>
+                            <div class="selector-input-capsul">
+                                <input class="selector-input region-selector-input" type="text" />
+                                <span class="selector-input choose-box-selector-text region_input empty">Регион учебного заведения</span>
+                            </div>
+                            <p class="choose-box-type choose-box-selector-text"></p>
+                            <span class="icon selector_icon cansel" id="region-cansel"></span>
+                            <span class="icon reversed selector_icon" id="region_selector_icon"></span>
                         </div>
                     </div>
                 </div>
@@ -755,7 +773,7 @@ class Selectors extends HTMLElement {
             total = this.querySelector("#in_total");
         }
 
-        const type_chooser_border = this.querySelector(".choose-box-selector-text");
+        const type_chooser_border = this.getElementsByClassName("choose-box-selector-text")[1];
         const type_selector = this.querySelector(".type-selector");
         const type_selector_icon = this.querySelector("#type_selector_icon");
         const type_cansel_button = this.querySelector("span.icon.cansel#type-cansel");
